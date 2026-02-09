@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="about-container">
+    <h1>About NeuroScan AI</h1>
+    
+    <section class="about-section">
+        <h2>Our Mission</h2>
+        <p>
+            NeuroScan AI is dedicated to revolutionizing brain tumor detection through artificial intelligence 
+            and machine learning. Our mission is to provide accessible, accurate, and explainable AI-assisted 
+            diagnostic tools to medical professionals worldwide.
+        </p>
+    </section>
+
+    <section class="about-section">
+        <h2>Technology</h2>
+        <p>
+            We leverage state-of-the-art deep learning models trained on extensive medical imaging datasets. 
+            Our system uses DenseNet architecture combined with advanced visualization to provide transparent 
+            and interpretable results that clinicians can understand and act upon.
+        </p>
+    </section>
+
+    <section class="about-section">
+        <h2>What We Detect</h2>
+        <div class="tumor-types">
+            <div class="tumor-card">
+                <h3>Glioma Tumor</h3>
+                <p>Rapidly growing, infiltrative tumors originating from glial cells</p>
+            </div>
+            <div class="tumor-card">
+                <h3>Meningioma Tumor</h3>
+                <p>Slow-growing tumors from the meningeal layers of the brain</p>
+            </div>
+            <div class="tumor-card">
+                <h3>Pituitary Tumor</h3>
+                <p>Endocrine-related tumors from the pituitary gland</p>
+            </div>
+            <div class="tumor-card">
+                <h3>No Tumor</h3>
+                <p>Normal brain imaging with no abnormal growths detected</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <h2>Important Disclaimer</h2>
+        <div class="disclaimer-box">
+            <p>
+                <strong>IMPORTANT:</strong> NeuroScan AI is an AI-assisted diagnostic tool designed to support 
+                medical professionals. It is NOT a replacement for professional medical diagnosis. All results must be 
+                reviewed and confirmed by qualified radiologists and physicians. This system should only be used as a 
+                supplementary tool in clinical decision-making.
+            </p>
+        </div>
+    </section>
+</div>
+
+{% endblock %}

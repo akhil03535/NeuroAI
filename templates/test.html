@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="analysis-container">
+    <h1>Brain MRI Tumor Analysis</h1>
+    <p class="subtitle">Upload an MRI scan image for AI-assisted analysis</p>
+
+    <div class="upload-section">
+        <form class="upload-form" method="POST" enctype="multipart/form-data">
+            <div class="file-input-wrapper">
+                <input type="file" name="image" id="imageInput" accept="image/*" required>
+                <label for="imageInput" class="file-label">
+                    <span class="upload-icon">+</span>
+                    <span class="upload-text">Click to select MRI image</span>
+                </label>
+            </div>
+            <button type="submit" class="btn-primary btn-large">
+                Analyze MRI Image
+            </button>
+        </form>
+    </div>
+
+    {% if upload_error %}
+    <div class="alert alert-error">
+        ❌ {{ upload_error }}
+    </div>
+    {% endif %}
+
+    {% if upload_success %}
+    <div class="alert alert-success">
+        ✅ {{ upload_success }}
+    </div>
+    {% endif %}
+
+    {% if tumor %}
+    <div class="result-container">
+        <div class="result-header">
+            <h2>Analysis Results</h2>
+            <span class="result-badge">Completed</span>
+        </div>
+
+        <div class="result-grid">
+            <div class="result-card">
+                <h3>Diagnosis Result</h3>
+                <div class="diagnosis-result">
+                    <p class="diagnosis-text">{{ tumor }}</p>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <h3>AI Visualization</h3>
+                <p class="visualization-desc">Highlighted regions of interest in the MRI scan</p>
+                <img src="/{{ gradcam }}" class="result-image" alt="Analysis Heatmap">
+            </div>
+        </div>
+
+        <div class="report-section">
+            <h3>Medical Report</h3>
+            <p>Download the comprehensive diagnostic report in PDF format</p>
+            <a href="/download?path={{ report }}" class="btn-secondary btn-download">
+                Download Medical Report (PDF)
+            </a>
+        </div>
+
+        <div class="info-box">
+            <p><strong>Note:</strong> This analysis is AI-assisted and should be reviewed by a qualified medical professional before clinical use.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
