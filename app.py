@@ -15,7 +15,14 @@ REPORTS = "static/reports"
 for f in [UPLOAD, GRADCAM, REPORTS]:
     os.makedirs(f, exist_ok=True)
 
-model = tf.keras.models.load_model("brain_tumor_densenet_final.h5")
+# Lazy model loading
+model = None
+
+def get_model():
+    global model
+    if model is None:
+        model = tf.keras.models.load_model("brain_tumor_densenet_final.h5")
+    return model
 
 CLASSES = ['Glioma Tumor', 'Meningioma Tumor', 'No Tumor', 'Pituitary Tumor']
 IMG_SIZE = 224
@@ -23,6 +30,7 @@ LAST_CONV = "conv5_block16_concat"
 
 # ---------- GRAD-CAM (BULLETPROOF) ----------
 def predict_with_gradcam(img_array):
+    model = get_model()
     preds = model.predict(img_array, verbose=0).reshape(-1)
     class_id = int(np.argmax(preds))
     confidence = float(preds[class_id])
@@ -402,5 +410,9 @@ def download():
     path = request.args.get("path")
     return send_file(path, as_attachment=True)
 
+
+import os
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
