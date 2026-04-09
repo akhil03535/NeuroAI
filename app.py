@@ -350,10 +350,12 @@ def generate_report(patient_name, patient_age, tumor, confidence):
 # ---------- ROUTES ----------
 @app.route("/")
 def home():
-    return render_template("index.html")
+    print("Home route accessed")
+    return "App is LIVE 🚀"
 
 @app.route("/test", methods=["GET", "POST"])
 def test():
+    print("Test route accessed")
     if request.method == "POST":
         # Get patient information
         patient_name = request.form.get("patient_name")
