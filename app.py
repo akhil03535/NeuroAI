@@ -68,106 +68,269 @@ def get_tumor_characteristics(tumor_type):
     }
     return characteristics.get(tumor_type, 'Unknown')
 
-def generate_report(name, tumor, confidence):
-    path = f"{REPORTS}/{name}_report.pdf"
+def generate_report(patient_name, patient_age, tumor, confidence):
+    from datetime import datetime
+    
+    # Create filename with timestamp
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    report_filename = f"{patient_name.replace(' ', '_')}_{timestamp}_report.pdf"
+    path = f"{REPORTS}/{report_filename}"
+    
+    # Create the PDF
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib import colors
+    
     c = canvas.Canvas(path, pagesize=letter)
+    width, height = letter
     
-    # Colors
-    header_color = (10, 61, 98)  # Dark blue
+    # Professional Color Palette - Blue and White
+    PRIMARY_BLUE = colors.HexColor('#003366')  # Dark Blue
+    LIGHT_BLUE = colors.HexColor('#E8F0F7')    # Light Blue Background
+    ACCENT_BLUE = colors.HexColor('#0066CC')   # Accent Blue
+    DIVIDER_COLOR = colors.HexColor('#B3D9FF') # Light Blue Divider
+    TEXT_DARK = colors.HexColor('#333333')     # Dark Text
     
-    # Hospital Header
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(50, 760, "NeuroScan AI Medical Center")
-    c.setFont("Helvetica", 10)
-    c.drawString(50, 745, "Brain Tumor Analysis & Diagnostic Report")
+    # ==================== PAGE 1 ====================
     
-    # Line
-    c.line(50, 740, 550, 740)
+    # = PROFESSIONAL HEADER =
+    c.setFillColor(PRIMARY_BLUE)
+    c.rect(0, height - 100, width, 100, fill=1, stroke=0)
     
-    # Report Details Header
+    # Hospital Name and Logo Area
+    c.setFont("Helvetica-Bold", 22)
+    c.setFillColor(colors.white)
+    c.drawString(60, height - 45, "NeuroScan AI")
+    
+    c.setFont("Helvetica", 11)
+    c.setFillColor(colors.HexColor('#B3D9FF'))
+    c.drawString(60, height - 62, "Medical Brain Tumor Analysis Center")
+    c.drawString(60, height - 77, "Diagnostic Imaging Report")
+    
+    # Report Type and Date on Right
     c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, 720, "DIAGNOSTIC REPORT")
+    c.setFillColor(colors.white)
+    c.drawRightString(width - 60, height - 45, "MRI BRAIN SCAN REPORT")
     
-    # Report Info
-    c.setFont("Helvetica", 11)
-    report_id = name.replace(" ", "_")[:20]
-    c.drawString(50, 700, f"Report ID: {report_id}")
-    c.drawString(300, 700, f"Generated: {datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')}")
-    
-    c.drawString(50, 680, f"Examination Type: MRI Brain Scan")
-    c.drawString(300, 680, f"Analysis Method: AI-Assisted Detection")
-    
-    # Line
-    c.line(50, 670, 550, 670)
-    
-    # Clinical Findings
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, 650, "CLINICAL FINDINGS")
-    
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(70, 630, "Diagnosis:")
-    c.setFont("Helvetica", 11)
-    c.drawString(150, 630, tumor)
-    
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(70, 610, "Tumor Size:")
-    c.setFont("Helvetica", 11)
-    c.drawString(150, 610, estimate_tumor_size(tumor))
-    
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(70, 590, "Tumor Type:")
-    c.setFont("Helvetica", 11)
-    c.drawString(150, 590, tumor)
-    
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(70, 570, "Characteristics:")
-    c.setFont("Helvetica", 11)
-    chars = get_tumor_characteristics(tumor)
-    c.drawString(150, 570, chars)
-    
-    # Line
-    c.line(50, 555, 550, 555)
-    
-    # Impression
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, 535, "IMPRESSION & RECOMMENDATIONS")
-    
-    c.setFont("Helvetica", 10)
-    y = 515
-    if tumor == "No Tumor":
-        c.drawString(50, y, "• No abnormal mass or tumor detected in the brain parenchyma.")
-        y -= 20
-        c.drawString(50, y, "• Ventricles and sulci appear normal in configuration and size.")
-    else:
-        c.drawString(50, y, f"• {tumor} detected on MRI examination.")
-        y -= 20
-        c.drawString(50, y, "• Lesion characteristics and size documented above.")
-        y -= 20
-        c.drawString(50, y, "• Recommend consultation with Neurology/Neurooncology specialist.")
-    
-    y -= 30
-    c.drawString(50, y, "• This AI-generated analysis is supplementary to radiologist review.")
-    y -= 20
-    c.drawString(50, y, "• Clinical correlation recommended for final diagnosis.")
-    
-    # Line
-    c.line(50, y - 10, 550, y - 10)
-    
-    # Disclaimer
-    c.setFont("Helvetica-Bold", 10)
-    c.drawString(50, y - 30, "IMPORTANT DISCLAIMER:")
     c.setFont("Helvetica", 9)
-    y -= 50
-    c.drawString(50, y, "This report is AI-assisted analysis and is intended for clinical support only.")
-    y -= 15
-    c.drawString(50, y, "It does NOT replace professional radiologist or physician diagnosis.")
-    y -= 15
-    c.drawString(50, y, "Always consult with qualified medical professionals for diagnosis and treatment.")
+    c.setFillColor(colors.HexColor('#B3D9FF'))
+    current_date = datetime.now().strftime('%B %d, %Y')
+    current_time = datetime.now().strftime('%H:%M:%S')
+    c.drawRightString(width - 60, height - 62, f"Date: {current_date}")
+    c.drawRightString(width - 60, height - 77, f"Time: {current_time}")
+    
+    y_position = height - 120
+    
+    # Horizontal line
+    c.setStrokeColor(DIVIDER_COLOR)
+    c.setLineWidth(2)
+    c.line(40, y_position, width - 40, y_position)
+    
+    y_position -= 25
+    
+    # = PATIENT DEMOGRAPHICS SECTION =
+    c.setFillColor(LIGHT_BLUE)
+    c.rect(40, y_position - 75, width - 80, 75, fill=1, stroke=0)
+    
+    c.setFont("Helvetica-Bold", 11)
+    c.setFillColor(PRIMARY_BLUE)
+    c.drawString(55, y_position - 10, "PATIENT INFORMATION")
+    
+    c.setFont("Helvetica", 10)
+    c.setFillColor(TEXT_DARK)
+    c.drawString(55, y_position - 28, f"Patient Name: {patient_name}")
+    c.drawString(55, y_position - 45, f"Age: {patient_age} years")
+    c.drawString(55, y_position - 62, f"Exam Date: {datetime.now().strftime('%d-%m-%Y at %H:%M:%S')}")
+    
+    c.setFont("Helvetica", 10)
+    c.drawRightString(width - 55, y_position - 28, "Report ID: NS-AI-2026")
+    c.drawRightString(width - 55, y_position - 45, "Modality: MRI Brain")
+    c.drawRightString(width - 55, y_position - 62, "Status: COMPLETED")
+    
+    y_position -= 110
+    
+    # = CLINICAL INDICATION =
+    c.setFont("Helvetica-Bold", 11)
+    c.setFillColor(PRIMARY_BLUE)
+    c.drawString(55, y_position, "CLINICAL INDICATION")
+    
+    c.setFont("Helvetica", 10)
+    c.setFillColor(TEXT_DARK)
+    y_position -= 18
+    c.drawString(55, y_position, "Brain MRI scan for tumor screening and detection using AI-assisted analysis.")
+    
+    y_position -= 30
+    
+    # Dividing line
+    c.setStrokeColor(DIVIDER_COLOR)
+    c.setLineWidth(1)
+    c.line(40, y_position, width - 40, y_position)
+    
+    y_position -= 25
+    
+    # = FINDINGS SECTION (Main Diagnosis) =
+    c.setFont("Helvetica-Bold", 12)
+    c.setFillColor(PRIMARY_BLUE)
+    c.drawString(55, y_position, "FINDINGS")
+    
+    y_position -= 25
+    
+    # Diagnosis Box
+    if tumor == "No Tumor":
+        box_color = colors.HexColor('#E8F5E9')  # Light Green
+        title_color = colors.HexColor('#1B5E20')  # Dark Green
+        border_color = colors.HexColor('#4CAF50')  # Green
+    else:
+        box_color = colors.HexColor('#FFEBEE')  # Light Red
+        title_color = colors.HexColor('#B71C1C')  # Dark Red
+        border_color = colors.HexColor('#F44336')  # Red
+    
+    # Diagnosis box
+    c.setFillColor(box_color)
+    c.rect(40, y_position - 55, width - 80, 55, fill=1, stroke=1)
+    c.setStrokeColor(border_color)
+    c.setLineWidth(2.5)
+    c.rect(40, y_position - 55, width - 80, 55, fill=1, stroke=1)
+    
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColor(PRIMARY_BLUE)
+    c.drawString(55, y_position - 15, "PRIMARY DIAGNOSIS:")
+    
+    c.setFont("Helvetica-Bold", 16)
+    c.setFillColor(title_color)
+    c.drawString(55, y_position - 38, tumor)
+    
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColor(PRIMARY_BLUE)
+    c.drawRightString(width - 55, y_position - 15, "AI CONFIDENCE:")
+    
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColor(ACCENT_BLUE)
+    c.drawRightString(width - 55, y_position - 38, f"{confidence:.1f}%")
+    
+    y_position -= 85
+    
+    # Detailed Findings
+    c.setFont("Helvetica", 10)
+    c.setFillColor(TEXT_DARK)
+    
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColor(PRIMARY_BLUE)
+    c.drawString(55, y_position, "Detailed Analysis:")
+    
+    y_position -= 20
+    c.setFont("Helvetica-Bold", 9)
+    c.setFillColor(TEXT_DARK)
+    c.drawString(65, y_position, "• Tumor Type:")
+    
+    c.setFont("Helvetica", 9)
+    c.drawString(160, y_position, tumor)
+    
+    y_position -= 18
+    c.setFont("Helvetica-Bold", 9)
+    c.setFillColor(TEXT_DARK)
+    c.drawString(65, y_position, "• Estimated Size:")
+    
+    c.setFont("Helvetica", 9)
+    c.drawString(160, y_position, estimate_tumor_size(tumor))
+    
+    y_position -= 18
+    c.setFont("Helvetica-Bold", 9)
+    c.setFillColor(TEXT_DARK)
+    c.drawString(65, y_position, "• Characteristics:")
+    
+    c.setFont("Helvetica", 9)
+    characteristics = get_tumor_characteristics(tumor)
+    c.drawString(160, y_position, characteristics)
+    
+    y_position -= 30
+    
+    # Dividing line
+    c.setStrokeColor(DIVIDER_COLOR)
+    c.setLineWidth(1)
+    c.line(40, y_position, width - 40, y_position)
+    
+    y_position -= 25
+    
+    # = IMPRESSION =
+    c.setFont("Helvetica-Bold", 11)
+    c.setFillColor(PRIMARY_BLUE)
+    c.drawString(55, y_position, "IMPRESSION")
+    
+    y_position -= 20
+    c.setFont("Helvetica", 9)
+    c.setFillColor(TEXT_DARK)
+    
+    if tumor == "No Tumor":
+        impression_lines = [
+            "• No abnormal mass or tumor detected in the brain parenchyma.",
+            "• Ventricular system appears normal in size and configuration.",
+            "• No midline shift or mass effect identified.",
+            "• Overall findings are unremarkable and reassuring."
+        ]
+    else:
+        impression_lines = [
+            f"• {tumor} detected on MRI examination of the brain.",
+            "• Lesion characteristics and size are documented in detailed findings above.",
+            "• CLINICAL CORRELATION AND SPECIALIST CONSULTATION RECOMMENDED.",
+            "• Consider advanced imaging studies if clinically indicated."
+        ]
+    
+    for line in impression_lines:
+        c.drawString(55, y_position, line)
+        y_position -= 15
+    
+    y_position -= 15
+    
+    # Dividing line
+    c.setStrokeColor(DIVIDER_COLOR)
+    c.setLineWidth(1)
+    c.line(40, y_position, width - 40, y_position)
+    
+    y_position -= 20
+    
+    # = RECOMMENDATION =
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColor(PRIMARY_BLUE)
+    c.drawString(55, y_position, "RECOMMENDATION")
+    
+    y_position -= 18
+    c.setFont("Helvetica", 9)
+    c.setFillColor(TEXT_DARK)
+    c.drawString(55, y_position, "This AI-assisted analysis should be reviewed by a qualified radiologist or neurologist.")
+    y_position -= 15
+    c.drawString(55, y_position, "Clinical decisions should be made in correlation with patient symptoms and clinical history.")
+    
+    y_position -= 30
+    
+    # = FOOTER SECTION =
+    c.setStrokeColor(DIVIDER_COLOR)
+    c.setLineWidth(1)
+    c.line(40, y_position, width - 40, y_position)
+    
+    y_position -= 20
+    
+    # Disclaimer box
+    c.setFillColor(colors.HexColor('#FFF8E1'))  # Light Yellow
+    c.rect(40, y_position - 45, width - 80, 45, fill=1, stroke=0)
+    c.setStrokeColor(colors.HexColor('#F57F17'))  # Orange
+    c.setLineWidth(1)
+    c.rect(40, y_position - 45, width - 80, 45, fill=1, stroke=1)
+    
+    c.setFont("Helvetica-Bold", 8)
+    c.setFillColor(colors.HexColor('#E65100'))
+    c.drawString(55, y_position - 12, "⚠️ IMPORTANT DISCLAIMER")
+    
+    c.setFont("Helvetica", 7)
+    c.setFillColor(colors.HexColor('#4E342E'))
+    c.drawString(55, y_position - 25, "This report is generated using AI technology for clinical support only. It does NOT replace professional medical diagnosis.")
+    c.drawString(55, y_position - 35, "Always consult qualified medical professionals for diagnosis and treatment decisions.")
     
     # Footer
     c.setFont("Helvetica", 8)
-    c.drawString(50, 30, "NeuroScan AI © 2026 | Confidential - For Medical Use Only")
-    c.drawString(350, 30, "Page 1 of 1")
+    c.setFillColor(colors.HexColor('#666666'))
+    c.drawString(55, 30, "NeuroScan AI Medical Center © 2026 | Confidential Medical Document")
+    c.drawRightString(width - 55, 30, f"Page 1 | Report ID: {report_filename.split('_')[0][:15]}")
     
     c.save()
     return path
@@ -180,6 +343,13 @@ def home():
 @app.route("/test", methods=["GET", "POST"])
 def test():
     if request.method == "POST":
+        # Get patient information
+        patient_name = request.form.get("patient_name")
+        patient_age = request.form.get("patient_age")
+        
+        if not patient_name or not patient_age:
+            return render_template("test.html", upload_error="Please enter patient name and age.")
+        
         file = request.files.get("image")
         if not file or file.filename == '':
             return render_template("test.html", upload_error="No file uploaded. Please select an image and try again.")
@@ -205,7 +375,7 @@ def test():
             gradcam_path = f"{GRADCAM}/{file.filename}"
             cv2.imwrite(gradcam_path, overlay)
 
-            report_path = generate_report(file.filename, tumor, conf * 100)
+            report_path = generate_report(patient_name, patient_age, tumor, conf * 100)
 
             return render_template("test.html",
                                    tumor=tumor,

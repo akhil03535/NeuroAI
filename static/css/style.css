@@ -458,7 +458,79 @@ main.main-content {
 .upload-form {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 28px;
+}
+
+/* ===============================================
+   PATIENT INFORMATION FORM
+   =============================================== */
+
+.patient-info-section {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e6f1ff 100%);
+    padding: 28px;
+    border-radius: 10px;
+    border-left: 5px solid var(--secondary-color);
+    box-shadow: 0 2px 8px rgba(30, 144, 255, 0.1);
+}
+
+.form-section-title {
+    color: var(--primary-color);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 0.2px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+}
+
+.required {
+    color: var(--danger-color);
+    font-weight: 700;
+    margin-left: 4px;
+}
+
+.form-input {
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    color: var(--dark-text);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
+    background: rgba(30, 144, 255, 0.01);
+}
+
+.form-input::placeholder {
+    color: #999;
+}
+
+.divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--border-color) 50%, transparent 100%);
 }
 
 .file-input-wrapper {
@@ -572,6 +644,50 @@ main.main-content {
     box-shadow: 0 4px 12px rgba(46, 204, 113, 0.25);
 }
 
+/* ===============================================
+   PATIENT SUMMARY CARD
+   =============================================== */
+
+.patient-summary-card {
+    background: linear-gradient(135deg, #e8f5ff 0%, #d4e9ff 100%);
+    padding: 28px;
+    border-radius: 12px;
+    border: 2px solid var(--secondary-color);
+    margin-bottom: 35px;
+    box-shadow: 0 4px 16px rgba(30, 144, 255, 0.15);
+    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.summary-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.summary-label {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.summary-value {
+    color: var(--dark-text);
+    font-weight: 600;
+    font-size: 16px;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 6px;
+    border-left: 4px solid var(--secondary-color);
+}
+
 .result-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -621,6 +737,14 @@ main.main-content {
     font-size: 26px;
     font-weight: 700;
     letter-spacing: 0.3px;
+}
+
+.confidence-text {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    margin-top: 12px;
+    opacity: 0.9;
 }
 
 .visualization-desc {
@@ -1028,12 +1152,143 @@ footer.footer {
 }
 
 /* ===============================================
+   LOADING SPINNER ANIMATION
+   =============================================== */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 61, 98, 0.95);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+    animation: fadeInOverlay 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.spinner {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.spinner-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 4px solid transparent;
+    border-top: 4px solid #1e90ff;
+    border-right: 4px solid rgba(30, 144, 255, 0.5);
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+
+.spinner-ring:nth-child(2) {
+    width: 60px;
+    height: 60px;
+    top: 10px;
+    left: 10px;
+    border-top: 4px solid #64b5f6;
+    border-right: 4px solid rgba(100, 181, 246, 0.5);
+    animation: spin 1s linear infinite reverse;
+}
+
+.spinner-ring:nth-child(3) {
+    width: 40px;
+    height: 40px;
+    top: 20px;
+    left: 20px;
+    border-top: 4px solid #90caf9;
+    border-right: 4px solid rgba(144, 202, 249, 0.5);
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    font-size: 26px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+    text-align: center;
+    animation: fadeInText 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
+}
+
+.loading-subtext {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.3px;
+    text-align: center;
+    animation: fadeInText 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s backwards;
+}
+
+@keyframes fadeInText {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ===============================================
    RESPONSIVE DESIGN
    =============================================== */
 
 @media (max-width: 768px) {
     .container {
         padding: 40px 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .navbar {

@@ -46,5 +46,31 @@
     </div>
 </footer>
 
+<script>
+    // Show loading spinner when form is submitted
+    function showLoadingSpinner() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('active');
+        }
+    }
+
+    // Hide loading spinner when page loads (for when results are displayed)
+    window.addEventListener('load', function() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.remove('active');
+        }
+    });
+
+    // Hide loading spinner if page is already loaded and has results
+    if (document.readyState === 'complete') {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.remove('active');
+        }
+    }
+</script>
+
 </body>
 </html>
