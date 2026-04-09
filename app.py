@@ -1,7 +1,9 @@
+import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+
 from flask import Flask, render_template, request, send_file
-import tensorflow as tf
 import numpy as np
-import cv2, os, datetime
+import cv2, datetime
 from tensorflow.keras.preprocessing import image
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -15,10 +17,11 @@ REPORTS = "static/reports"
 for f in [UPLOAD, GRADCAM, REPORTS]:
     os.makedirs(f, exist_ok=True)
 
-# Lazy model loading
+# Lazy model loading - delay TensorFlow import
 model = None
 
 def get_model():
+    import tensorflow as tf
     global model
     if model is None:
         model = tf.keras.models.load_model("brain_tumor_densenet_final.h5")
@@ -30,6 +33,7 @@ LAST_CONV = "conv5_block16_concat"
 
 # ---------- GRAD-CAM (BULLETPROOF) ----------
 def predict_with_gradcam(img_array):
+    import tensorflow as tf
     model = get_model()
     preds = model.predict(img_array, verbose=0).reshape(-1)
     class_id = int(np.argmax(preds))
@@ -396,6 +400,10 @@ def test():
             return render_template("test.html", upload_error=f"Error processing the file: {str(e)}. Please try again.")
 
     return render_template("test.html")
+
+@app.route("/health")
+def health():
+    return "OK"
 
 @app.route("/about")
 def about():
