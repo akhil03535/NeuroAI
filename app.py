@@ -350,8 +350,7 @@ def generate_report(patient_name, patient_age, tumor, confidence):
 # ---------- ROUTES ----------
 @app.route("/")
 def home():
-    print("Home route accessed")
-    return "App is LIVE 🚀"
+    return render_template("index.html")
 
 @app.route("/test", methods=["GET", "POST"])
 def test():

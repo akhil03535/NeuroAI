@@ -2,5 +2,5 @@ flask
 gunicorn
 numpy
 opencv-python-headless
-tensorflow-cpu
+tensorflow==2.16.1
 reportlab
