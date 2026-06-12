@@ -397,16 +397,22 @@ def test():
 
            # heatmap, tumor, conf = predict_with_gradcam(img_arr)
             print("STEP 1: Starting prediction")
-            heatmap, tumor, conf = predict_with_gradcam(img_arr)
+           # heatmap, tumor, conf = predict_with_gradcam(img_arr)
+            model = get_model()
+            preds = model.predict(img_arr, verbose=0).reshape(-1)
+            class_id = int(np.argmax(preds))
+            conf = float(preds[class_id])
+            tumor = CLASSES[class_id]
+            gradcam_path = None
             print("STEP 2: Prediction completed")
 
-            img_cv = cv2.imread(img_path)
-            heatmap = cv2.resize(heatmap, (img_cv.shape[1], img_cv.shape[0]))
-            heatmap = cv2.applyColorMap(np.uint8(255 * heatmap), cv2.COLORMAP_JET)
-            overlay = cv2.addWeighted(img_cv, 0.6, heatmap, 0.4, 0)
+            # img_cv = cv2.imread(img_path)
+            # heatmap = cv2.resize(heatmap, (img_cv.shape[1], img_cv.shape[0]))
+            # heatmap = cv2.applyColorMap(np.uint8(255 * heatmap), cv2.COLORMAP_JET)
+            # overlay = cv2.addWeighted(img_cv, 0.6, heatmap, 0.4, 0)
 
-            gradcam_path = f"{GRADCAM}/{file.filename}"
-            cv2.imwrite(gradcam_path, overlay)
+            # gradcam_path = f"{GRADCAM}/{file.filename}"
+            # cv2.imwrite(gradcam_path, overlay)
 
             report_path = generate_report(patient_name, patient_age, tumor, conf * 100)
 
