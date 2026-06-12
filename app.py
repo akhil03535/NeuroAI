@@ -18,13 +18,25 @@ for f in [UPLOAD, GRADCAM, REPORTS]:
     os.makedirs(f, exist_ok=True)
 
 # Lazy model loading - delay TensorFlow import
-model = None
+# model = None
+
+# def get_model():
+#     import tensorflow as tf
+#     global model
+#     if model is None:
+#         model = tf.keras.models.load_model("brain_tumor_densenet_final.h5")
+#     return model
+
+import tensorflow as tf
+
+# Reduce memory usage on Render
+tf.config.threading.set_intra_op_parallelism_threads(1)
+tf.config.threading.set_inter_op_parallelism_threads(1)
+
+# Load model once when app starts
+model = tf.keras.models.load_model("brain_tumor_densenet_final.h5")
 
 def get_model():
-    import tensorflow as tf
-    global model
-    if model is None:
-        model = tf.keras.models.load_model("brain_tumor_densenet_final.h5")
     return model
 
 CLASSES = ['Glioma Tumor', 'Meningioma Tumor', 'No Tumor', 'Pituitary Tumor']
