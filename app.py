@@ -47,15 +47,20 @@ LAST_CONV = "conv5_block16_concat"
 def predict_with_gradcam(img_array):
     import tensorflow as tf
     model = get_model()
+    print("STEP A: model.predict")
     preds = model.predict(img_array, verbose=0).reshape(-1)
     class_id = int(np.argmax(preds))
     confidence = float(preds[class_id])
 
+    print("STEP B: Creating gradient model")
     grad_model = tf.keras.models.Model(
         inputs=model.input,
         outputs=[model.get_layer(LAST_CONV).output, model.output]
+    
     )
-
+     
+    
+    print("STEP C: Starting GradientTape")
     with tf.GradientTape() as tape:
         conv_out, prediction = grad_model(img_array)
         prediction = tf.reshape(prediction, [-1])
@@ -390,7 +395,10 @@ def test():
             img_arr = image.img_to_array(img) / 255.0
             img_arr = np.expand_dims(img_arr, axis=0)
 
+           # heatmap, tumor, conf = predict_with_gradcam(img_arr)
+            print("STEP 1: Starting prediction")
             heatmap, tumor, conf = predict_with_gradcam(img_arr)
+            print("STEP 2: Prediction completed")
 
             img_cv = cv2.imread(img_path)
             heatmap = cv2.resize(heatmap, (img_cv.shape[1], img_cv.shape[0]))
